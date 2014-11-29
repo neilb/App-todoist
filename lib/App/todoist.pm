@@ -24,10 +24,11 @@ sub process_options
     my $config        = AppConfig::Std->new()
                         || croak "Can't instantiate AppConfig::Std\n";
 
-    $config->define('token',      { ARGCOUNT => 1 });
-    $config->define('project',    { ARGCOUNT => 1 });
-    $config->define('importfile', { ARGCOUNT => 1, ALIAS => 'i' });
-    $config->define('priority',   { ARGCOUNT => 1, ALIAS => 'p', DEFAULT => 4 });
+    $config->define('token',        { ARGCOUNT => 1 });
+    $config->define('project',      { ARGCOUNT => 1 });
+    $config->define('importfile',   { ARGCOUNT => 1, ALIAS => 'i' });
+    $config->define('priority',     { ARGCOUNT => 1, ALIAS => 'p', DEFAULT => 4 });
+    $config->define('add-project',  { ARGCOUNT => 1, ALIAS => 'ap' });
 
     if (defined($ENV{HOME}) && -f "$ENV{HOME}/.todoist") {
         my $filename = "$ENV{HOME}/.todoist";
@@ -43,7 +44,9 @@ sub process_options
     }
 
     croak "you must provide a token\n"   unless $config->token;
-    croak "you must provide a project\n" unless $config->project;
+    if (!$config->project && !$config->get('add-project')) {
+        croak "you must either project a project, or add a project\n";
+    }
 
     $self->{config} = $config;
 
@@ -92,13 +95,25 @@ sub run
         printf STDERR "%d tasks added from %s\n", int(@tasks),
                       $self->config->importfile;
     }
+
+    if ($self->config->get('add-project')) {
+        $self->todoist->addProject(name => $self->config->get('add-project'));
+        my @projects = $self->todoist->getProjects;
+        my ($project) = grep { $_->{name} eq $self->config->get('add-project') } @projects;
+        if (defined($project)) {
+            print STDERR "Project added - id = ", $project->{id}, "\n";
+        }
+        else {
+            die "Failed to add project\n";
+        }
+    }
 }
 
 1;
 
 =head1 NAME
 
-App::todoist - implements the meat of a command-line interface to todoist.com
+App::todoist - command-line for manipulating your todoist.com todo list
 
 =head1 SYNOPSIS
 

@@ -19,6 +19,7 @@ todoist - command-line tool for managing your todoist.com todo list
 =head1 SYNOPSIS
 
  todoist -project perl -token XXX -i taskfile.txt [ -priority 1|2|3|4 ]
+         [ -add-project projectname ]
 
 =head1 DESCRIPTION
 
@@ -26,8 +27,17 @@ This script gives you a command-line interface to the API for todoist,
 which is an online todo list service, with interfaces on most mobile
 devices and desktop operating systems.
 
-At the moment this just supports importing a list of tasks from
-a text file, with one task per line. It will evolve over time.
+At the moment this just supports two operations:
+
+=over 4
+
+=item * importing a list of tasks from a text file, with one task per line.
+
+=item * adding a new project
+
+=back
+
+It will evolve over time - I'll be adding more features as I need them.
 I've released this in a separate dist so as not to add a bunch of
 non-core dependencies to L<Net::Todoist>.
 
