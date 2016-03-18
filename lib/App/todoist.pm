@@ -6,7 +6,7 @@ use warnings;
 use Net::Todoist;
 use Carp qw/ croak /;
 use AppConfig::Std;
-use File::Slurp qw/ read_file /;
+use File::Slurper qw/ read_lines /;
 
 sub new
 {
@@ -84,7 +84,7 @@ sub run
     $self->process_options($opts);
 
     if ($self->config->importfile) {
-        my @tasks = read_file($self->config->importfile, chomp => 1);
+        my @tasks = read_lines($self->config->importfile);
         foreach my $task (@tasks) {
             $self->todoist->addItem(
                 project_id => $self->{project_id},
