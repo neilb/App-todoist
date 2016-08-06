@@ -1,5 +1,8 @@
 Release history for Perl distribution App-todoist
 
+0.04 2016-08-06 NEILB
+    - Include META.json in release, and tag & push to github
+
 0.03 2016-03-18 NEILB
     - Switched to File::Slurper in place of File::Slurp
 
